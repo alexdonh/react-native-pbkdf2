@@ -1,0 +1,6 @@
+{
+  "src/**/*.ts": [
+     "prettier --write --loglevel warn",
+     "eslint --ext .ts --max-warnings 0 --fix"
+   ]
+}
