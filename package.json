@@ -25,7 +25,7 @@
     "test": "jest",
     "build": "tsc --noEmit",
     "lint": "eslint \"**/*.{js,ts,tsx}\"",
-    "prepare": "bob build && husky install"
+    "prepare": "bob build"
   },
   "keywords": [
     "react-native",
