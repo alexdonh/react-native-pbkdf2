@@ -73,7 +73,5 @@
       "post-commit": "git update-index --again"
     }
   },
-  "dependencies": {
-    "safe-buffer": "^5.2.1"
-  }
+  "dependencies": {}
 }

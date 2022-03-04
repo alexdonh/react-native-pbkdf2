@@ -1,5 +1,5 @@
 import { NativeModules } from 'react-native';
-import { Buffer } from 'safe-buffer';
+import { Buffer } from 'buffer';
 
 type BinaryLike = string | NodeJS.ArrayBufferView;
 
@@ -70,6 +70,11 @@ function pbkdf2(
 
   NativeModules.Pbkdf2.derive(password, salt, iterations, keylen, digest)
     .then((derivedKey: string) => {
+      if (!derivedKey) {
+        return callback(
+          new Error('Pbkdf2 native module could not return a value')
+        );
+      }
       callback(null, Buffer.from(derivedKey, 'base64'));
     })
     .catch((err: any) => {
@@ -95,17 +100,17 @@ function pbkdf2Sync(
   password = toBuffer(password, 'utf8', 'Password').toString('base64');
   salt = toBuffer(salt, 'utf8', 'Salt').toString('base64');
 
-  let output: string = '';
-  let wait = true;
-  NativeModules.Pbkdf2.derive(password, salt, iterations, keylen, digest)
-    .then((derivedKey: string) => {
-      output = derivedKey;
-    })
-    .finally(() => {
-      wait = false;
-    });
-  while (wait) {}
-  return Buffer.from(output, 'base64');
+  const derivedKey = NativeModules.Pbkdf2.deriveSync(
+    password,
+    salt,
+    iterations,
+    keylen,
+    digest
+  );
+  if (!derivedKey) {
+    throw new Error('Pbkdf2 native module could not return a value');
+  }
+  return Buffer.from(derivedKey, 'base64');
 }
 
 export { pbkdf2, pbkdf2Sync };
